@@ -6,5 +6,5 @@ def init(ctx):
 def update(ctx, signal_name, signal_data):
     # Should handle updates
 
-results = backtest(init, update, signals={...})
+results = backtest(init, update, prices={"ticker": ticker_dataframe_ohlc}, signals={"signal": signal_dataframe})
 ```
