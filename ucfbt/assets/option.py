@@ -1,10 +1,13 @@
 import pandas as pd
 from ucfbt.assets.asset  import Asset
 
-class Stock(Asset):
+class Option(Asset):
     def __init__(self, ticker, prices_df, portfolio):
         super().__init__(ticker, prices_df, portfolio)
         self.limit_orders = set()
+        self.underlying = ???
+        self.strike = ???
+        self.type = ???
     
     def market_buy(self, size):
         self.market_order(size)
@@ -43,24 +46,24 @@ class Stock(Asset):
                 if(self.currData("Low") <= price <= self.currData("High")):
                     self.change_position(price, size)
                     fills.append((price, size))
+                if(self.type == "Call" and self.ti)
             for i in range(cur_index, len(fills)):
                 self.limit_orders.remove(fills[i])
             self.index += 1
-        self.signal_time = newTime
+        self.signal_time = newTime       
     
     def change_position(self, price, size):
-        price = self.slippage(price)
         self.portfolio["cash"] -= size * price
         self.portfolio["cash"] -= self.feeModel(size)
         if self.ticker not in self.portfolio:
             self.portfolio[self.ticker] = 0
-        self.portfolio[self.ticker] += size
+        self.portfolio[self.ticker] += size 
 
     def get_value(self, portfolio):
         try:
             return portfolio[self.ticker] * self.currData("Close")
         except:
-            print("{} stock not in portfolio".format(self.ticker))
+            print("{} option not in portfolio".format(self.ticker))
             return 0
     
     def feeModel(self, size):
