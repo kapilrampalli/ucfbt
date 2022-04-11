@@ -1,4 +1,5 @@
 import pandas as pd
+from ucfbt.results import standard_metrics
 class Stock:
     def __init__(self, ticker, prices):
         self.ticker = ticker
@@ -85,7 +86,9 @@ def backtest(init, update, assets, signal):
         for asset in assets:
             value += asset.get_value(portfolio)
         value_history.loc[index]["value"] = value
-    return portfolio_history, value_history       
+    return portfolio_history, value_history   
+
+
 
 
 def init(ctx):
@@ -93,9 +96,10 @@ def init(ctx):
 def update(ctx, portfolio, assets, signal):
     if "AAPL" not in portfolio:
         assets[0].limit_buy(170, 1)
+
     
 portfolio_history, value_history = backtest(init, update, [Stock("AAPL", "dummy.csv") ], pd.read_csv("signal.csv", parse_dates=True).sort_values("time").reset_index(drop=True))
-print(value_history)
+standard_metrics(portfolio_history, value_history)
 
 
 """
