@@ -17,15 +17,15 @@ import datetime as dt
 
 def standard_metrics(portfolio_history, value_history):
     # print("RETURNS:")
-    # print(value_history)
-    returns_hold = pd.Series(value_history['value']).pct_change()
+    print(portfolio_history)
+    returns_hold = pd.Series(value_history['portfolio_value']).pct_change()
     # print("PCT CHANGE:")
     # print(returns_hold)
     sharpe = returns_hold.aggregate(sharpe_ratio)
     sort = returns_hold.aggregate(sortino)
-    max_drawdown = returns_hold.aggregate(lambda r: drawdown(r).Drawdown.min()) * 100
-    # print("Sharpe: ", sharpe)
-    # print("Sortino: ", sort)
+    max_drawdown = returns_hold.aggregate(lambda r: drawdown(r).Drawdown.min())
+    print("Sharpe: ", sharpe)
+    print("Sortino: ", sort)
     print("Max Drawdown: ", max_drawdown)
 
     figure(figsize=(15, 6))
@@ -60,7 +60,7 @@ def annualize_vol(r, periods_per_year):
     """
     return r.std()*(periods_per_year**0.5)
 
-def sharpe_ratio(r, riskfree_rate=0.03, periods_per_year=252):  
+def sharpe_ratio(r, riskfree_rate=0.03, periods_per_year=20):  
     """
     Computes the annualized sharpe ratio of a set of returns
     """
@@ -71,7 +71,7 @@ def sharpe_ratio(r, riskfree_rate=0.03, periods_per_year=252):
     ann_vol = annualize_vol(r, periods_per_year)
     return ann_ex_ret/ann_vol
 
-def sortino(r, riskfree_rate=0.03, periods_per_year=252):
+def sortino(r, riskfree_rate=0.03, periods_per_year=20):
     rf_per_period = (1+riskfree_rate)**(1/periods_per_year)-1
     excess_ret = r - rf_per_period
     ann_ex_ret = annualize_rets(excess_ret, periods_per_year)

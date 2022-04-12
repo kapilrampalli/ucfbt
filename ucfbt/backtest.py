@@ -19,7 +19,20 @@ def backtest(init, update, assets, signal, portfolio):
             if asset.ticker in portfolio:
                 portfolio_history.loc[index, asset.ticker, ] = portfolio[asset.ticker]
         value = portfolio["cash"]
+        assets_value = 0
+        
         for asset in assets:
             value += asset.get_value(portfolio)
+            assets_value += asset.get_value(portfolio)
         value_history.loc[index, "value"] = value
+        if index == 0 or value_prior == 0:
+             value_history.loc[index, "change"] = 0
+        else:
+            value_history.loc[index, "change"] = (assets_value - value_prior)/value_prior
+        if index == 0:
+            value_history.loc[index, "portfolio_value"] = 100000
+        else:
+            value_history.loc[index, "portfolio_value"] = value_history.loc[index - 1, "portfolio_value"]  * (1 + (value_history.loc[index,'change']))
+
+        value_prior = assets_value
     return portfolio_history, value_history       
