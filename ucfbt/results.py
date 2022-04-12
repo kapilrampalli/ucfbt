@@ -23,14 +23,19 @@ def standard_metrics(portfolio_history, value_history):
     # print(returns_hold)
     sharpe = returns_hold.aggregate(sharpe_ratio)
     sort = returns_hold.aggregate(sortino)
+    max_drawdown = returns_hold.aggregate(lambda r: drawdown(r).Drawdown.min())
     # print("Sharpe: ", sharpe)
     # print("Sortino: ", sort)
+    print(max_drawdown)
 
     figure(figsize=(15, 6))
     x = [dt.datetime.strptime(d,'%m/%d/%Y').date() for d in value_history['time']]
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=int(len(x) / 10)))
-    plt.plot(x,value_history['value'])
+    fig, axs = plt.subplots(2)
+    axs[0].plot(x,value_history['value'])
+    axs[0].plot(x,-value_history['value'])
+    
     plt.gcf().autofmt_xdate()
     plt.xlabel("Date")
     plt.ylabel("Value")
@@ -76,3 +81,16 @@ def sortino(r, riskfree_rate=0.03, periods_per_year=252):
 
     return ann_ex_ret/neg_ann_vol
 
+def drawdown(return_series: pd.Series):
+    """Takes a time series of asset returns.
+       returns a DataFrame with columns for
+       the wealth index, 
+       the previous peaks, and 
+       the percentage drawdown
+    """
+    wealth_index = 100*(1+return_series).cumprod()
+    previous_peaks = wealth_index.cummax()
+    drawdowns = (wealth_index - previous_peaks)/previous_peaks
+    return pd.DataFrame({"Wealth": wealth_index, 
+                         "Previous Peak": previous_peaks, 
+                         "Drawdown": drawdowns})
