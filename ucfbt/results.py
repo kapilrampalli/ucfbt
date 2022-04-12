@@ -27,7 +27,7 @@ def standard_metrics(portfolio_history, value_history):
     # print("Sortino: ", sort)
 
     figure(figsize=(15, 6))
-    x = [dt.datetime.strptime(d,'%m/%d/%Y').date() for d in value_history['time']]
+    x = value_history['time']
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=int(len(x) / 10)))
     plt.plot(x,value_history['value'])
