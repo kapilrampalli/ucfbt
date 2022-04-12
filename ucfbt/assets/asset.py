@@ -1,9 +1,10 @@
+import pandas as pd
 class Asset:
     def __init__(self, ticker, prices_df, portfolio, transformFunc = lambda x : x):
         self.ticker = ticker
         self.data = prices_df
         self.index = 0
-        self.signal_time = None
+        self.signal_time = pd.Timestamp(0, unit='s')
         self.position = 0
         self.portfolio = portfolio
         self.priceTransform = transformFunc
