@@ -23,18 +23,16 @@ def standard_metrics(portfolio_history, value_history):
     # print(returns_hold)
     sharpe = returns_hold.aggregate(sharpe_ratio)
     sort = returns_hold.aggregate(sortino)
-    max_drawdown = returns_hold.aggregate(lambda r: drawdown(r).Drawdown.min())
+    max_drawdown = returns_hold.aggregate(lambda r: drawdown(r).Drawdown.min()) * 100
     # print("Sharpe: ", sharpe)
     # print("Sortino: ", sort)
-    print(max_drawdown)
+    print("Max Drawdown: ", max_drawdown)
 
     figure(figsize=(15, 6))
     x = value_history['time']
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m/%d/%Y'))
     plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=int(len(x) / 10)))
-    fig, axs = plt.subplots(2)
-    axs[0].plot(x,value_history['value'])
-    axs[0].plot(x,-value_history['value'])
+    plt.plot(x,value_history['value'])
     
     plt.gcf().autofmt_xdate()
     plt.xlabel("Date")
